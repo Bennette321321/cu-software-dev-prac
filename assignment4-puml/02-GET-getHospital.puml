@@ -1,0 +1,23 @@
+@startuml Manage a hospital (GET)
+
+header Sample VacQ Sequence Diagram
+footer 6631321321 Thanagorn Chaiyut
+title "Manage a hospital (GET)"
+
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:hospitals" as routerHospitals
+participant "<<controllers>>\n:hospitals" as controllersHospitals
+participant "<<model>>\n:Hospital" as modelHospital
+database "<<MongoDB>>\n:hospitals" as HospitalsDatabase
+
+client->server ++:req.get('/api/v1/hospitals/:id')
+server->routerHospitals ++:app.use('/api/v1/hospitals/:id', hospitals)
+routerHospitals -> controllersHospitals ++:getHospital()
+controllersHospitals->modelHospital ++:findById(req.params.id)
+modelHospital ->HospitalsDatabase ++: HospitalSchema
+HospitalsDatabase --> modelHospital --: hospital
+controllersHospitals <-- modelHospital --:hospital
+controllersHospitals->client --:response
+
+@enduml
